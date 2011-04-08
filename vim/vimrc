@@ -1,0 +1,424 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Maintainer: jon rogers
+"             lonepie@gmail.com
+"
+" Version: 1.0 - 31/03/11 14:03:30
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+filetype off
+" Pathogen
+call pathogen#runtime_append_all_bundles()
+call pathogen#helptags()
+
+" Sets how many lines of history VIM has to remember
+set history=700
+
+" share windows clipboard
+set clipboard+=unnamed
+
+" Enable filetype plugin
+filetype plugin on
+filetype indent on
+
+" Set to auto read when a file is changed from the outside
+set autoread
+
+set ffs=unix,dos,mac "Default file types
+
+" determine OS
+fun! MySys()
+  if has('win32') || has('win64')
+    return "windows"
+  elseif has('macunix')
+    return "mac"
+  else
+    return "linux"
+  endif
+endfun
+
+set nocompatible
+set shortmess=atI " shortens messages to avoid 'press a key' prompt 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => VIM user interface
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set 7 lines to the curors - when moving vertical..
+set so=7
+
+set wildmenu "Turn on WiLd menu
+
+set ruler "Always show current position
+
+set cmdheight=2 "The commandbar height
+
+set hid "Change buffer - without saving
+
+set number "show line numbers
+
+" Set backspace config
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+set ignorecase "Ignore case when searching
+set smartcase
+
+set hlsearch "Highlight search things
+
+set incsearch "Make search act like search in modern browsers
+set nolazyredraw "Don't redraw while executing macros 
+
+set magic "Set magic on, for regular expressions
+
+set showmatch "Show matching bracets when text indicator is over them
+set mat=2 "How many tenths of a second to blink
+
+" No sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Colors and Fonts
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+syntax enable "Enable syntax hl
+
+set background=dark
+if has('gui_running')
+    let g:molokai_original = 1
+    colorscheme molokai
+    " colorscheme jellybeans
+else
+    if &term =~ '256color'
+        set t_Co=256
+        colorscheme tir_black   
+    else
+        colorscheme ir_black
+    endif
+endif
+
+set encoding=utf8
+try
+    lang en_US
+catch
+endtry
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Files, backups and undo
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Turn backup off, since most stuff is in SVN, git anyway...
+set nobackup
+set nowb
+set noswapfile
+
+"Persistent undo
+try
+    if MySys() == "windows"
+      set undodir=C:\Windows\Temp
+    else
+      set undodir=~/.vim/undodir
+    endif
+    
+    set undofile
+catch
+endtry
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Text, tab and indent related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set noexpandtab
+set tabstop=4
+set shiftwidth=4
+set tabstop=4
+set smarttab
+
+set lbr
+set tw=500
+
+set ai "Auto indent
+set si "Smart indet
+set nowrap "do not wrap lines
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Moving around, tabs and buffers
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Map space to / (search) and c-space to ? (backgwards search)
+map <space> /
+map <c-space> ?
+
+" turn off search highlight when pressing <esc>
+map <silent> <leader><cr> :noh<cr>
+if has("gui_running")
+    nnoremap <esc> :noh<cr>
+endif
+
+" Smart way to move btw. windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Use the arrows to something usefull
+map <right> :bn<cr>
+map <left> :bp<cr>
+
+" When pressing <leader>cd switch to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>
+
+""""""""""""""""""""""""""""""
+" => Statusline
+""""""""""""""""""""""""""""""
+" Always show the statusline
+set laststatus=2
+
+" Format the statusline
+" set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
+" set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]\ [POS=%04l,%04v][%p%%]\ [LEN=%L]
+
+" function! CurDir()
+"     let curdir = substitute(getcwd(), '/Users/jrogers/', "~/", "g")
+"     return curdir
+" endfunction
+" 
+" function! HasPaste()
+"     if &paste
+"         return 'PASTE MODE  '
+"     else
+"         return ''
+"     endif
+" endfunction
+hi StatColor guibg=#95e454 guifg=black ctermbg=lightgreen ctermfg=black
+hi Modified guibg=orange guifg=black ctermbg=lightred ctermfg=black
+
+function! MyStatusLine(mode)
+    let statusline=""
+    if a:mode == 'Enter'
+        let statusline.="%#StatColor#"
+    endif
+    let statusline.="\(%n\)\ %f\ "
+    if a:mode == 'Enter'
+        let statusline.="%*"
+    endif
+    let statusline.="%#Modified#%m"
+    if a:mode == 'Leave'
+        let statusline.="%*%r"
+    elseif a:mode == 'Enter'
+        let statusline.="%r%*"
+    endif
+    let statusline .= "\ (%l/%L,\ %c)\ %P%=%h%w\ %y\ [%{&encoding}:%{&fileformat}]\ \ "
+    return statusline
+endfunction
+
+au WinEnter * setlocal statusline=%!MyStatusLine('Enter')
+au WinLeave * setlocal statusline=%!MyStatusLine('Leave')
+set statusline=%!MyStatusLine('Enter')
+
+function! InsertStatuslineColor(mode)
+  if a:mode == 'i'
+    hi StatColor guibg=orange ctermbg=lightred
+  elseif a:mode == 'r'
+    hi StatColor guibg=#e454ba ctermbg=magenta
+  elseif a:mode == 'v'
+    hi StatColor guibg=#e454ba ctermbg=magenta
+  else
+    hi StatColor guibg=red ctermbg=red
+  endif
+endfunction 
+
+au InsertEnter * call InsertStatuslineColor(v:insertmode)
+au InsertLeave * hi StatColor guibg=#95e454 guifg=black ctermbg=lightgreen ctermfg=black
+au InsertLeave * hi Modified guibg=orange guifg=black ctermbg=lightred ctermfg=black
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Autocommands
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"vb.net syntax
+autocmd BufNewFile,BufRead *.vb set ft=vbnet
+" tmux synax
+autocmd BufNewFile,BufRead .tmux.conf set ft=tmux
+
+au filetype help set nonumber      " no line numbers when viewing help
+au filetype help nnoremap <buffer><cr> <c-]>   " Enter selects subject
+au filetype help nnoremap <buffer><bs> <c-T>   " Backspace to go bac
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General Abbrevs
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Editing mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <F2> :set invpaste paste?<CR>
+imap <F2> <C-O><F2>
+set pastetoggle=<F2>
+
+" show quickfix window for current search
+nnoremap <silent> <leader>gr :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Omni complete functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType c set omnifunc=ccomplete#Complete
+autocmd FileType cs set omnifunc=syntaxcomplete#Complete
+if has("ruby")
+    autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Spell checking
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Pressing ,ss will toggle and untoggle spell checking
+map <leader>ss :setlocal spell!<cr>
+
+"Shortcuts using <leader>
+map <leader>sn ]s
+map <leader>sp [s
+map <leader>sa zg
+map <leader>s? z=
+
+""""""""""""""""""""""""""""""
+" => Minibuffer plugin
+""""""""""""""""""""""""""""""
+let g:miniBufExplModSelTarget = 1
+let g:miniBufExplUseSingleClick = 1
+let g:miniBufExplMapWindowNavVim = 1
+let g:bufExplorerDefaultHelp = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugin mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NERD
+map <up> <ESC>:NERDTreeToggle<RETURN>
+" Tlist
+map <F4> :TlistToggle<cr><cr>
+" Gundo
+nnoremap <c-z> :GundoToggle<CR>
+" Yankring
+nnoremap <silent> <leader>yr :YRShow<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugin settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:indent_finder_enabled = 0
+let g:yankring_history_dir = '' . g:VIMFILES
+
+if MySys() == "windows"
+  let Grep_Cygwin_Find = 1
+endif
+
+" define additional comment types for tcomment
+call tcomment#DefineType('aspnet', '<%%-- %s --%%>')
+call tcomment#DefineType('autohotkey', '; %s')
+
+" NERD tree
+let NERDTreeIgnore=['^_svn$', '^\.svn$']
+let NERDTreeHijackNetrw=1
+let g:NERDShutUp = 1
+
+"highlight Pmenu guibg=brown gui=bold
+let g:LustyJugglerSuppressRubyWarning = 1
+let g:user_zen_settings = {
+            \  'php' : {
+            \    'extends' : 'html',
+            \    'filters' : 'c',
+            \  },
+            \  'xml' : {
+            \    'extends' : 'html',
+            \  },
+            \}
+let g:ragtag_global_maps = 1
+
+" easymotion mappings
+let g:EasyMotion_mapping_t = '_tf'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Neocomplcache
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:neocomplcache_enable_at_startup = 1
+if exists('g:neocomplcache_enable_at_startup') && g:neocomplcache_enable_at_startup == 1
+    " Use smartcase.
+    let g:neocomplcache_enable_smart_case = 1
+    " Use camel case completion.
+    let g:neocomplcache_enable_camel_case_completion = 1
+    " Use underbar completion.
+    let g:neocomplcache_enable_underbar_completion = 1
+
+    "let g:neocomplcache_auto_completion_start_length = 3
+    "let g:neocomplcache_manual_completion_start_length = 3
+    let g:neocomplcache_min_syntax_length = 3
+    let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+
+    let g:neocomplcache_snippets_dir = globpath(&runtimepath, 'snippets/')
+    " Define keyword.
+    if !exists('g:neocomplcache_keyword_patterns')
+        let g:neocomplcache_keyword_patterns = {}
+    endif
+    let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+
+    " Plugin key-mappings.
+    imap <C-k>     <Plug>(neocomplcache_snippets_expand)
+    smap <C-k>     <Plug>(neocomplcache_snippets_expand)
+    inoremap <expr><C-g>     neocomplcache#undo_completion()
+    inoremap <expr><C-l>     neocomplcache#complete_common_string()
+    " Recommended key-mappings.
+    " <CR>: close popup and save indent.
+    "inoremap <expr><CR>  (pumvisible() ? "\<C-y>":'') . "\<C-f>\<CR>X\<BS>"
+    " <TAB>: completion. -- conflicts with snipMate
+    "inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    " <C-h>, <BS>: close popup and delete backword char.
+    inoremap <expr><C-h> pumvisible() ? neocomplcache#close_popup()."\<C-h>" : "\<C-h>"
+    inoremap <expr><BS> pumvisible() ? neocomplcache#close_popup()."\<C-h>" : "\<C-h>"
+    inoremap <expr><C-y>  neocomplcache#close_popup()
+    inoremap <expr><C-e>  neocomplcache#cancel_popup()
+    "AutoComplPop like behavior.
+    "let g:neocomplcache_enable_auto_select = 1
+    "inoremap <expr><CR>  (pumvisible() ? "\<C-e>":'') . (&indentexpr != '' ? "\<C-f>\<CR>X\<BS>":"\<CR>")
+    "inoremap <expr><C-h> pumvisible() ? "\<C-e>\<C-h>" : "\<C-h>"
+    "inoremap <expr><BS> pumvisible() ? "\<C-e>\<C-h>" : "\<C-h>"
+    "let g:neocomplcache_snippets_dir = globpath(&runtimepath, 'snippets/')
+    "au FileType * let g:neocomplcache_snippets_dir = globpath(&runtimepath, 'snippets/' . &ft)
+    "au FileType php let g:neocomplcache_snippets_dir .= ',' . globpath(&runtimepath, 'snippets/html')
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => MISC
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Fast editing of the .vimrc
+map <leader>ev :exec "e " . g:VIMFILES . "/vimrc"<cr>
+
+" When vimrc is edited, reload it
+if MySys() == "windows"
+    autocmd! bufwritepost vimrc source ~/_vimrc "exec 'source ' . g:VIMFILES . '/vimrc'
+else
+    autocmd! bufwritepost vimrc source ~/.vimrc
+endif
+
+" Remove the Windows ^M - when the encodings gets messed up
+noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+
+" start->run the current file
+if MySys() == "windows"
+    nmap <silent> <Leader>x :silent ! start "1" "%:p"<CR>
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => GVIMRC
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has('gui_running')
+    exec 'source ' . g:VIMFILES . '/gvimrc'
+endif

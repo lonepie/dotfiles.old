@@ -1,0 +1,14 @@
+" get vimrc and vimfiles from dropbox
+let g:VIMFILES='$HOME/Dropbox/Backup/vim/vimfiles'
+if has('win32') || has('win64')
+  "set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+  execute 'set runtimepath=' . g:VIMFILES . ',' . g:VIMFILES .'/after,$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after'
+endif
+
+execute 'source ' . g:VIMFILES . '/vimrc'
+
+" user-specific changes
+if has('gui_running')
+  set guifont=Monaco:h8
+  " set guifont=Anonymous_Pro:h10 " font of choice
+endif
