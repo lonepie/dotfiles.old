@@ -12,14 +12,19 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 filetype off
 " Pathogen
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+if !exists("g:loaded_pathogen")
+    call pathogen#runtime_append_all_bundles()
+    call pathogen#helptags()
+endif
 
 " Sets how many lines of history VIM has to remember
 set history=700
 
 " share windows clipboard
 set clipboard+=unnamed
+
+" use mouse everywhere
+set mouse=a
 
 " Enable filetype plugin
 filetype plugin on
