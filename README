@@ -1,6 +1,6 @@
 Do something like this:
-git clone git://github.com/lonepie/dotfiles.git
+git clone git://github.com/lonepie/dotfiles.git ~/dotfiles
 
-ln -s ~/.vim/vimrc ~/.vimrc
-
+ln -s ~/dotfiles/vim/vimrc ~/.vimrc
+cd dotfiles
 git submodule update --init
