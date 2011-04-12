@@ -37,13 +37,15 @@ set ffs=unix,dos,mac "Default file types
 
 " determine OS
 fun! MySys()
-  if has('win32') || has('win64')
-    return "windows"
-  elseif has('macunix')
-    return "mac"
-  else
-    return "linux"
-  endif
+    if has('win32') || has('win64')
+        return "windows"
+    elseif has('win32unix')
+        return "cygwin"
+    elseif has('macunix')
+        return "mac"
+    else
+        return "linux"
+    endif
 endfun
 
 set nocompatible
@@ -327,8 +329,10 @@ if MySys() == "windows"
 endif
 
 " define additional comment types for tcomment
-call tcomment#DefineType('aspnet', '<%%-- %s --%%>')
-call tcomment#DefineType('autohotkey', '; %s')
+if exists('loaded_tcomment')
+    call tcomment#DefineType('aspnet', '<%%-- %s --%%>')
+    call tcomment#DefineType('autohotkey', '; %s')
+endif
 
 " NERD tree
 let NERDTreeIgnore=['^_svn$', '^\.svn$']
