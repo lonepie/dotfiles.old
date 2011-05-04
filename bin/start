@@ -1,0 +1,28 @@
+#!/bin/bash
+# I have called this script "windows" in my bin dir.
+usage ()
+{
+ echo "Open Windows Explorer"
+ echo "Usage: $0 [-help] [path]"
+ echo "          [path]: folder at which to open Windows Explorer, will"
+ echo "              default to current dir if not supplied."
+ echo "          [-help] Display help (this message)."
+}
+ 
+ 
+location=.
+case "$1" in
+ ""                 ) location=.;;
+ "-help"            ) usage; exit 0;;
+ *                  ) location="${1}";;
+esac
+ 
+if [ -e "$location" ]
+then
+   WIN_PATH=`cygpath -w -a "${location}"`
+   cmd /C start "" "$WIN_PATH"
+else
+ echo ${location} does not exist!
+ exit 2
+fi
+
