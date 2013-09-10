@@ -1,0 +1,18 @@
+[user]
+	email = lonepie@gmail.com
+	name = Jon Rogers
+[diff]
+	tool = bc3
+[difftool "bc3"]
+	path = C:/Program Files (x86)/Beyond Compare 3/BComp.exe
+[merge]
+	tool = bc3
+[mergetool "bc3"]
+	path = c:/program files (x86)/beyond compare 3/bcomp.exe
+[push]
+	default = simple
+[credential]
+[core]
+	excludesfile = ~/.gitignore_global
+[credential]
+	helper = !'C:\\Users\\Jon\\AppData\\Roaming\\GitCredStore\\git-credential-winstore.exe'

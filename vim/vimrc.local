@@ -1,0 +1,283 @@
+" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker nospell:
+
+"vimrc overrides
+let g:spf13_consolidated_directory = $HOME . '/.vim/'
+colorscheme molokai
+set encoding=utf-8
+"set guifont=Inconsolata_for_Powerline:h11:cANSI
+"
+"try to override tab settings just to see if it works - it does!
+"set shiftwidth=2                " Use indents of 2 spaces
+"set expandtab                   " Tabs are spaces, not tabs
+"set tabstop=2                   " An indentation every four columns
+"set softtabstop=2               " Let backspace delete indent
+
+" help file autocmds
+au filetype help set nonumber      " no line numbers when viewing help
+au filetype help nnoremap <buffer><cr> <c-]>   " Enter selects subject
+au filetype help nnoremap <buffer><bs> <c-T>   " Backspace to go back
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Editing mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" switch buffers with left/right arrows
+map <right> :bn<cr>
+map <left> :bp<cr>
+
+" When pressing <leader>cd switch to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>
+
+" turn off search highlight when pressing <esc>
+map <silent> <leader><cr> :noh<cr>
+if has("gui_running")
+    nnoremap <silent> <esc> :noh<cr>
+endif
+
+nnoremap <F2> :set invpaste paste?<CR>
+imap <F2> <C-O><F2>
+set pastetoggle=<F2>
+
+" show quickfix window for current search
+nnoremap <silent> <leader>gr :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
+
+" Insert newline without entering insert mode
+map <S-Enter> O<Esc>
+map <CR> o<Esc>
+
+" opposite of S-J
+nnoremap <C-J> a<CR><Esc>k$
+
+"move a line of text using ALT+[jk], indent with ALT+[hl]
+nnoremap <A-j> :m+<CR>==
+nnoremap <A-k> :m-2<CR>==
+nnoremap <A-h> <<
+nnoremap <A-l> >>
+inoremap <A-j> <Esc>:m+<CR>==gi
+inoremap <A-k> <Esc>:m-2<CR>==gi
+inoremap <A-h> <Esc><<`]a
+inoremap <A-l> <Esc>>>`]a
+vnoremap <A-j> :m'>+<CR>gv=gv
+vnoremap <A-k> :m-2<CR>gv=gv
+vnoremap <A-h> <gv
+vnoremap <A-l> >gv
+
+"map H ^
+"map L $
+
+"Shortcuts using <leader>
+map <leader>sn ]s
+map <leader>sp [s
+map <leader>sa zg
+map <leader>s? z=
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugin mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NERD Tree
+map <up> <ESC>:NERDTreeToggle<RETURN>
+map <c-up> <esc>:NERDTree<RETURN>
+" NERD Commenter
+map gcc <plug>NERDCommenterToggle
+vmap gc <plug>NERDCommenterToggle
+"map gcc <plug>NERDCommenterInvert
+"vmap gc <Plug>NERDCommenterInvert
+" Tlist
+"map <F4> :TlistToggle<cr><cr>
+
+" Tagbar
+nnoremap <silent> <F4> :TagbarToggle<CR>
+nnoremap <c-down> <esc>:TagbarToggle<CR>
+
+" Gundo
+nnoremap <c-z> :GundoToggle<CR>
+" Yankring
+nnoremap <silent> <leader>yr :YRShow<CR>
+let g:yankring_replace_n_pkey = '<Char-172>'
+let g:yankring_replace_n_nkey = '<Char-174>'
+
+" QFixToggle
+map <leader>q :QFix<cr>
+
+" Buffergator
+"map <leader>bg :BuffergatorToggle<CR>
+
+" CtrlP
+let g:ctrlp_user_command = {
+    \ 'types': {
+        \ 1: ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others'],
+        \ 2: ['.hg', 'hg --cwd %s locate -I .'],
+    \ }
+\ }
+map <leader>p :CtrlP<cr>
+map <leader>mr :CtrlPMRU<cr>
+unmap <D-t>
+unmap <D-r>
+"nnoremap <silent> <C-t> :CtrlP<CR>
+"nnoremap <silent> <C-r> :CtrlPMRU<CR>
+
+" Ack
+map <leader>a :Ack!
+
+" syntastic
+map <leader>ck :SyntasticCheck<cr>
+
+" MRU
+"nnoremap <leader>mr :MRU<cr>
+
+" unite.vim
+call unite#custom#source(
+    \ 'buffer,file_rec/async,file_rec,file_mru', 'matchers',
+    \ ['converter_tail', 'matcher_default'])
+call unite#custom#source(
+    \ 'file_rec/async,file_rec,file_mru', 'converters',
+    \ ['converter_file_directory'])
+"call unite#custom#source('file,file/new,buffer,file_rec',
+    "\ 'matchers', 'matcher_fuzzy')
+let g:unite_data_directory='~/.vim/caches/unite'
+"let g:unite_source_rec_async_command = 'C:\MinGW\msys\1.0\bin\find.exe'
+let g:unite_source_history_yank_enable = 1
+let g:unite_enable_start_insert = 1
+let g:unite_prompt='» '
+if executable('ack')
+    let g:unite_source_rec_async_command = 'ack -f --nofilter'
+    let g:unite_source_grep_command='ack'
+    let g:unite_source_grep_default_opts='--no-heading --no-color -a -C4'
+    let g:unite_source_grep_recursive_opt=''
+endif
+"nmap <space> [unite]
+nnoremap [unite] <nop>
+nmap <space> [unite]
+nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
+nnoremap <silent> [unite]f :<C-u>Unite -toggle -auto-resize -buffer-name=files file_rec/async<cr><c-u>
+nnoremap <silent> [unite]y :<C-u>Unite -buffer-name=yanks history/yank<cr>
+nnoremap <silent> [unite]l :<C-u>Unite -auto-resize -buffer-name=line line<cr>
+nnoremap <silent> [unite]b :<C-u>Unite -auto-resize -buffer-name=buffers buffer<cr>
+nnoremap <silent> [unite]/ :<C-u>Unite -no-quit -buffer-name=search grep:.<cr>
+nnoremap <silent> [unite]m :<C-u>Unite -auto-resize -buffer-name=mappings mapping<cr>
+nnoremap <silent> [unite]s :<C-u>Unite -quick-match buffer<cr>
+
+"nnoremap <silent> [unite]c  :<C-u>UniteWithCurrentDir
+        "\ -buffer-name=files buffer file_mru bookmark file<CR>
+"nnoremap <silent> [unite]b  :<C-u>UniteWithBufferDir
+        "\ -buffer-name=files -prompt=%\  buffer file_mru bookmark file<CR>
+"nnoremap <silent> [unite]r  :<C-u>Unite
+        "\ -buffer-name=register register<CR>
+"nnoremap <silent> [unite]o  :<C-u>Unite outline<CR>
+"nnoremap <silent> [unite]f
+        "\ :<C-u>Unite -buffer-name=resume resume<CR>
+"nnoremap <silent> [unite]d
+        "\ :<C-u>Unite -buffer-name=files -default-action=lcd directory_mru<CR>
+"nnoremap <silent> [unite]ma
+        "\ :<C-u>Unite mapping<CR>
+"nnoremap <silent> [unite]me
+        "\ :<C-u>Unite output:message<CR>
+"nnoremap  [unite]f  :<C-u>Unite source<CR>
+
+"nnoremap <silent> [unite]s
+        "\ :<C-u>Unite -buffer-name=files -no-split
+        "\ jump_point file_point buffer_tab
+        "\ file_rec:! file file/new file_mru<CR>
+
+
+"nnoremap <silent> [unite]<space> :<C-u>Unite -toggle -auto-resize -buffer-name=mixed file_rec/async buffer file_mru bookmark<cr><c-u>
+"nnoremap <leader>z :<C-u>Unite -start-insert file_rec/async:!<CR>
+"nnoremap <space>/ :Unite grep:.<cr>
+"let g:unite_source_history_yank_enable = 1
+"nnoremap <leader>y :<C-u>Unite history/yank<CR>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugin settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:indent_finder_enabled = 0
+let g:yankring_history_dir = $HOME . '/.vim/'
+
+let g:tagbar_ctags_bin = $HOME . '/.vim/ctags.exe'
+
+" delimitMate
+let delimitMate_matchpairs = "(:),[:],{:},<:>"
+let delimitMate_balance_matchpairs = 1
+
+" define comment types for NERDCommenter
+let g:NERDCustomDelimiters = {
+            \ 'aspnet': { 'left': '<%--', 'right': '--%>' }
+            \ }
+let NERDCommentWholeLinesInVMode=2
+let NERDMenuMode=2
+
+" NERD tree
+"let NERDTreeIgnore=['^_svn$', '^\.svn$']
+let NERDTreeHijackNetrw=1
+let g:NERDShutUp = 1
+au Filetype nerdtree setlocal nolist
+
+let NERDTreeHighlightCursorline=1
+let NERDTreeIgnore=['^_svn$', '^\.svn$', '.vim$', '\~$', '.*\.pyc$', 'pip-log\.txt$', 'whoosh_index', 'xapian_index', '.*.pid', 'monitor.py', '.*-fixtures-.*.json', '.*\.o$', 'db.db']
+
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+
+" Xmledit
+let loaded_xmledit = 1
+let xml_use_xhtml = 1
+
+" Buffergator
+let g:buffergator_suppress_keymaps = 1
+
+"vim-session
+let g:session_autoload = 'no'
+let g:session_directory = "~/.vim/sessions"
+
+"ctrlp
+let g:ctrlp_working_path_mode = 0
+"let g:ctrlp_cache_dir = "~/.vim"
+
+" syntastic
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [], 'passive_filetypes': [] }
+
+" MRU
+let MRU_File = $HOME . '/.vim/.vim_mru_files'
+
+" indent html
+let g:html_indent_inctags = "html,body,head,tbody"
+let g:html_indent_script1 = "inc"
+let g:html_indent_style1 = "inc"
+
+" airline
+let g:airline_powerline_fonts = 1
+"let g:airline_theme='molokai'
+"let g:airline_theme='powerlineish'
+"let g:airline_exclude_preview = 0
+"let g:airline_detect_whitespace=0 "disabled
+" powerline symbols
+"let g:airline_left_sep = ''
+"let g:airline_left_alt_sep = ''
+"let g:airline_right_sep = ''
+"let g:airline_right_alt_sep = ''
+"let g:airline_branch_prefix = ' '
+"let g:airline_readonly_symbol = ''
+"let g:airline_linecolumn_prefix = ' '
+
+" numbers
+let g:enable_numbers = 0
+
+" minibufexpl
+let g:miniBufExplSplitBelow=0  " Put new window above
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => MISC
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Fast editing of the .vimrc
+map <leader>ev :exec "e ~/.vimrc.local"<cr>
+
+" Remove the Windows ^M - when the encodings gets messed up
+noremap <Leader>le mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+
+" start->run the current file
+nmap <silent> <Leader>x :silent ! start "1" "%:p"<CR>
+
+nmap <silent> <Leader>v :pu<CR>
+
+"UnBundles
+"UnBundle 'Lokaltog/powerline'
+"let g:powerline_loaded = 1
