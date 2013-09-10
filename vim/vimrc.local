@@ -70,14 +70,20 @@ map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
 
+" switch between showing listchars or not
+noremap <F11> :set list!<CR>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plugin mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"numbers toggle
+nnoremap <F3> :NumbersToggle<CR>
+
 " NERD Tree
 map <up> <ESC>:NERDTreeToggle<RETURN>
 map <c-up> <esc>:NERDTree<RETURN>
 " NERD Commenter
-map gcc <plug>NERDCommenterToggle
+nmap gcc <plug>NERDCommenterToggle
 vmap gc <plug>NERDCommenterToggle
 "map gcc <plug>NERDCommenterInvert
 "vmap gc <Plug>NERDCommenterInvert
@@ -243,7 +249,7 @@ let g:html_indent_inctags = "html,body,head,tbody"
 let g:html_indent_script1 = "inc"
 let g:html_indent_style1 = "inc"
 
-" airline
+" vim-airline
 let g:airline_powerline_fonts = 1
 "let g:airline_theme='molokai'
 "let g:airline_theme='powerlineish'
@@ -262,7 +268,7 @@ let g:airline_powerline_fonts = 1
 let g:enable_numbers = 0
 
 " minibufexpl
-let g:miniBufExplSplitBelow=0  " Put new window above
+let g:miniBufExplBRSplit = 0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => MISC
@@ -276,8 +282,8 @@ noremap <Leader>le mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 " start->run the current file
 nmap <silent> <Leader>x :silent ! start "1" "%:p"<CR>
 
+" open current file directory
+nmap <silent> <Leader>d :silent ! start "1" "%:p:h"<CR>
+
 nmap <silent> <Leader>v :pu<CR>
 
-"UnBundles
-"UnBundle 'Lokaltog/powerline'
-"let g:powerline_loaded = 1

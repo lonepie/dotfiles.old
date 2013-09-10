@@ -19,7 +19,5 @@ Bundle 'osyo-manga/unite-airline_themes'
 Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/unite.vim'
 Bundle 'sickill/vim-pasta'
-"if !has('gui_running')
-"    let g:spf13_use_old_powerline = true
-"endif
+
 let g:airline_powerline_fonts = 1
