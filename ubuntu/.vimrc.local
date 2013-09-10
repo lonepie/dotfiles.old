@@ -1,0 +1,38 @@
+colorscheme molokai
+set nospell
+let g:powerline_config_overrides={"common": {"dividers": {"left": {"hard": " ", "soft": "| "}, "right": {"hard": " ", "soft": " |"}}}}
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Editing mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" switch buffers with left/right arrows
+map <right> :bn<cr>
+map <left> :bp<cr>
+
+" When pressing <leader>cd switch to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>
+
+" Insert newline without entering insert mode
+map <S-Enter> O<Esc>
+map <CR> o<Esc>
+
+nnoremap <F2> :set invpaste paste?<CR>
+imap <F2> <C-O><F2>
+set pastetoggle=<F2>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugin mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NERD Tree
+map <up> <ESC>:NERDTreeToggle<RETURN>
+map <c-up> <esc>:NERDTree<RETURN>
+" NERD Commenter
+map gcc <plug>NERDCommenterToggle
+vmap gc <plug>NERDCommenterToggle
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Plugin settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:enable_numbers = 0
+
+let g:miniBufExplBRSplit = 0

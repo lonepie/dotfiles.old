@@ -1,0 +1,6 @@
+#add aspnet filetype
+--type-set=aspnet=.aspx,.ascx,.ashx,.master,.config
+# enable smart case
+--smart-case
+# follow symlinks
+--follow

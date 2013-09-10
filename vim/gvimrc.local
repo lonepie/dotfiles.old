@@ -1,0 +1,8 @@
+"set guifont=Inconsolata_for_Powerline:h11:cANSI
+"set guifont=Meslo\ LG\ M\ Regular\ for\ Powerline:h12
+set guifont=Inconsolata-dz_for_Powerline:h10
+set lines=60
+set columns=150
+set guioptions=AcgtmT
+"egmrLt
+

@@ -1,25 +1,47 @@
 # general tweaks
+shell zsh
 vbell off
 vbell_msg " *beep* "
 autodetach on
 startup_message off
 defscrollback 5000
-attrcolor b ".I"
-termcap xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
-defbce "on"
+
 term screen-256color
+#attrcolor b ".I"
+#defbce "on"
+#termcap xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+termcapinfo * ti@:te@
+
+activity        "activity in %n (%t)"
+bell_msg        "bell in %n (%t)"
+defhstatus      "screen: ^En (^Et)"
+#shelltitle      "$ |zsh"
 
 ## apps I want to auto-launch
-screen -t bash 0
-screen -t bash 1
-select 0
+#screen -t zsh 0
+#screen -t zsh 1
+#select 0
 #screen -t irssi irssi
 #screen -t mutt mutt
 
 ## statusline, customized. (should be one-line)
-hardstatus alwayslastline '%{gk}[ %{G}%H %{g}][%= %{wk}%?%-Lw%?%{=b kR}[%{W}%n%f %t%?(%u)%?%{=b kR}]%{= kw}%?%+Lw%?%?%= %{g}][%{Y}%l%{g}]%{=b C}[ %D %m/%d %C%a ]%{W}'
+hardstatus off
+hardstatus alwayslastline 
+#hardstatus string '%{gk}[ %{G}%H %{g}][%= %{wk}%?%-Lw%?%{=b kR}[%{W}%n%f %t%?(%u)%?%{=b kR}]%{= kw}%?%+Lw%?%?%= %{g}][%{Y}%l%{g}]%{=b C}[ %D %m/%d %C%a ]%{W}'
+#hardstatus string "%{+b wk} %-w%{+b wk} %n %t %{-}%+w %41=%H @ %l %-= %= %D,%c:%s "
+#hardstatus string "%{= ky}%-Lw%{=r}%20>%n %t%{= ky}%+Lw %{= ky}%-=| %{= kw}%M%d %c%{-} %{=r} ${USER}@%H "
+#hardstatus string '%{= kY}[ %{R}%H %{Y}][ %{g}load[%l] %{Y}][ %{B}%m/%d/%Y %c %{Y}][ %{r}%=%?%-w%?(%n%f %t)%?%+w%? %{Y}]'
+#hardstatus string '%{= G} %6` %7` %5` %= %{= w}%-w%{+b r}%n*%t%{-b r}%{w}%+w %= %{c}%D %m/%d/%Y %{= G}%1` '
+#hardstatus string "%{bk}[ %{Bk}%H %{bk}][ %{wk}%?%-Lw%?%{bk}(%{Yk}%n*%f %t%?(%u)%?%{bk})%{wk}%?%+Lw%?%?%= %{bk}][%{Gk} %Y-%m-%d %D %{Ck}%c:%s %{bk}]"
+#hardstatus string "%{= kw}$USER@%H [%f%t:%n] | %{kw}%-Lw%{kw}%50>%{yK}%n%f* %t%{-}%+Lw%<%{- kw} %= | %m/%d/%Y %C%a"
+#hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{=kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B}%Y-%m-%d %{W}%c %{g}]'
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{=kw}%?%-Lw%?%{r}(%{W}%n*%f %t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B}%Y-%m-%d %{W}%c %{g}]'
+#hardstatus string "%{= kR} %-Lw%{=b Kk} %n%f %t %{-}%+Lw %=%{= dd}"
 
-nethack on
+#caption always "%3n %t%? (%u)%?%?: %h%?"
+#caption always "%?%F%{= Kk}%:%{=u kR}%?  %h %-024=%{+b} %C%a %D %d %M %Y%{= db}"
+
+#nethack on
 nonblock on
 defnonblock 5
 altscreen on
@@ -30,3 +52,5 @@ defutf8 on
 bindkey "^[[5;2~" eval "copy" "stuff ^u"
 bindkey -m "^[[5;2~" stuff ^u
 bindkey -m "^[[6;2~" stuff ^d
+
+bind ^r source "${HOME}/.screenrc"
