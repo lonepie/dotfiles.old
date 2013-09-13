@@ -3,6 +3,27 @@ Push-Location (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent)
 Import-Module "posh-git"
 Enable-GitColors
 
+# prompt config
+. .\configurePrompt.ps1
+
+$clrDir = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
+$clrDir = split-path $clrDir
+$latestClrDir = ls $clrDir | ?{$_.PSIsContainer} | select -last 1
+$clrDir = join-path $clrDir $latestClrDir
+
+$env:path = "$($env:path);$clrDir"
+$env:EDITOR = "notepad"
+
+# Define variables
+. .\environment.ps1
+
+#. .\util\ls-color.ps1
+
+#. .\util\misc-utils.ps1
+
+#Add-PSSnapin FindChildItemPSSnapIn01
+
+# Define aliases & functions
 function which($cmd) {
 	get-command $cmd | format-table Path, Name
 }
@@ -22,69 +43,7 @@ function Find-InPath($fileName){
 	}
 }
 
-
-## Run posh-git init script
-#pushd
-#cd posh-git
-## Load posh-git module from current directory
-#Import-Module .\posh-git
-#Enable-GitColors
-#popd
-#
-## Run posh-hg init script
-#pushd
-#cd posh-hg
-## Load posh-svn module from current directory
-#Import-Module .\posh-hg
-#popd
-#
-## Run posh-svn init script
-#pushd
-#cd posh-svn
-## Load posh-svn module from current directory
-#Import-Module .\posh-svn
-#popd
-
-
-. .\configurePrompt.ps1
-
-# Configure ssh-agent so git doesn't require a password on every push
-#if(Test-InPath ssh-agent.*){
-#	. .\ssh-agent-utils.ps1
-#}else{
-#	Write-Error "ssh-agent cannot be found in your PATH, please add it"
-#}
-
-$clrDir = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
-$clrDir = split-path $clrDir
-$latestClrDir = ls $clrDir | ?{$_.PSIsContainer} | select -last 1
-$clrDir = join-path $clrDir $latestClrDir
-
-$env:path = "$($env:path);$clrDir"
-$env:EDITOR = "notepad"
-
-# Define variables
-. .\environment.ps1
-
-#. .\New-CommandWrapper.ps1
-#. .\ls-color.ps1
-
-#. .\misc-utils.ps1
-
-#Add-PSSnapin FindChildItemPSSnapIn01
-
-# Define aliases
 function mklink { cmd /c mklink $args }
-
-#function elevate-process{
-	#$file, [string]$arguments = $args;
-	#$psi = new-object System.Diagnostics.ProcessStartInfo $file;
-	#$psi.Arguments = $arguments;
-	#$psi.Verb = "runas";
-	#$psi.WorkingDirectory = get-location;
-	#[System.Diagnostics.Process]::Start($psi) >> $null
-#}
-#set-alias sudo elevate-process
 
 function Get-Git-Status{
 	git status
@@ -169,7 +128,6 @@ function elevate-process
     $psi.Verb = "runas";
     [System.Diagnostics.Process]::Start($psi);
 }
-
 set-alias sudo elevate-process;
 
 function Reload-Profile {
@@ -186,21 +144,24 @@ function Reload-Profile {
     }    
 }
 
+# Configure ssh-agent so git doesn't require a password on every push
+#if(Test-InPath ssh-agent.*){
+#	. .\util\ssh-agent-utils.ps1
+#}else{
+#	Write-Error "ssh-agent cannot be found in your PATH, please add it"
+#}
+
 # import modules
 Import-Module Find-ChildItem
-Import-Module go
+# Import-Module go # conflicts with PowerTab?
 Import-Module pscx
 Import-Module PoshCode
 Import-Module Find-String
-#Import-Module PowerTab
 Import-Module PsGet
 Import-Module PsUrl
-#Import-Module "TabExpansion++"
-Import-Module VirtualEnvWrapper
+# Import-Module VirtualEnvWrapper # conflicts with PowerTab?
+Import-Module "TabExpansion++" -ArgumentList "TabExpansion.xml"
 
 Import-Module "PowerTab" -ArgumentList "PowerTabConfig.xml"
-# Load posh-git example profile
-#. 'E:\Users\Jon\Documents\WindowsPowerShell\Modules\posh-git\profile.example.ps1'
-
 
 Pop-Location

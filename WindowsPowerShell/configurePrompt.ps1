@@ -108,13 +108,13 @@ function prompt {
 #$ '
 }
 
-function DevTabExpansion($lastBlock){
-    switch -regex ($lastBlock) {
-        'dev (\S*)$' {
-            ls $dev | ?{ $_.Name -match "^$($matches[1])" }
-        }
-    }
-}
+# function DevTabExpansion($lastBlock){
+    # switch -regex ($lastBlock) {
+        # 'dev (\S*)$' {
+            # ls $dev | ?{ $_.Name -match "^$($matches[1])" }
+        # }
+    # }
+# }
 
 #if(-not (Test-Path Function:\DefaultTabExpansion)) { # broken
 #if((Test-Path Function:\TabExpansion) -and (-not (Test-Path Function:\DefaultTabExpansion))) {

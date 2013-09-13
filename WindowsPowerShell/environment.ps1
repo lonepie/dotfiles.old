@@ -1,7 +1,7 @@
 $home2 = 'E:\Users\Jon\'
-$dev = $home2 + 'Dev'
-$downloads = $home2 + 'Downloads'
-$android = "$downloads\android"
+$dev = Join-Path $home2 'Dev'
+$downloads = Join-Path $home2 'Downloads'
+$android = Join-Path $downloads 'android'
 
 function Set-Location-AltProfile($folder){
 	Push-Location
@@ -17,7 +17,7 @@ function Set-Location-AltProfile($folder){
 set-alias home2 Set-Location-AltProfile
 
 # Enable Dropbox integration - uncomment below line (and fix path)
-$dropbox = $home2 + 'Dropbox'
+$dropbox = Join-Path $home2 'Dropbox'
 if($dropbox -ne $null -and (Test-Path $dropbox)){
 	. .\Util\Dropbox.ps1
 }
