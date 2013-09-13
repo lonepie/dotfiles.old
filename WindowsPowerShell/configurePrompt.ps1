@@ -1,5 +1,5 @@
 ﻿#$global:SvnPromptSettings.BeforeText = ' [svn: '
-$global:GitPromptSettings.BeforeText = ' [git: '
+#$global:GitPromptSettings.BeforeText = ' [git: '
 #$global:HgPromptSettings.BeforeText = ' [hg: '
 
 $wid=[System.Security.Principal.WindowsIdentity]::GetCurrent()
@@ -28,6 +28,7 @@ if(!$global:WindowTitlePrefix) {
 #let g:airline_readonly_symbol = ''
 #let g:airline_linecolumn_prefix = ' '
 
+$Global:GitPromptSettings.BeforeText = '  ['
 
 # Set up a simple prompt, adding the git/hg/svn prompt parts inside git/hg/svn repos
 function prompt {
@@ -38,21 +39,33 @@ function prompt {
     #support my profile spread across multiple drives
     $profile_path = $env:USERPROFILE.Replace("C:", "")
     $pwd_short = $pwd.path.Replace($profile_path, "~")
-	Write-Host " $env:USERNAME@$env:COMPUTERNAME " -n -foregroundcolor White -backgroundcolor DarkBlue
-    Write-Host " " -n  -foregroundcolor DarkBlue -backgroundcolor DarkRed
-    Write-Host "$pwd_short " -n -foregroundcolor White -backgroundcolor DarkRed
-    Write-Host "" -n -foregroundcolor DarkRed #-backgroundcolor Green
+    # $pwd_short = $pwd_short.Replace("\", "  ") #"
+    $arrPath = $pwd_short.split("\") #"
+    Write-Host "  $env:USERNAME@$env:COMPUTERNAME " -n -foregroundcolor White -backgroundcolor DarkMagenta
+    Write-Host " " -n  -foregroundcolor DarkMagenta -backgroundcolor DarkGray
+    # Write-Host $pwd_short -n -foregroundcolor White -backgroundcolor DarkGreen
+    for($i = 0; $i -lt $arrPath.Length; $i++) {
+        Write-Host $arrPath[$i] -n -f White -b DarkGray
+        if($i -lt $arrPath.Length - 1) {
+            Write-Host "  " -n -f Gray -b DarkGray
+        } else {
+            Write-Host " " -n -b DarkGray
+        }
+    }
+    Write-Host "" -n -foregroundcolor DarkGray
+    
+    
     #Write-Host $env:USERNAME -n -ForegroundColor Blue
-	#Write-Host "@" -n
-	#write-host ([net.dns]::GetHostName()) -n -f DarkMagenta
-	#Write-Host "[" -NoNewline
-	#Write-Host $pwd -NoNewline -ForegroundColor DarkGreen
-	#Write-Host "]" -NoNewline
+    #Write-Host "@" -n
+    #write-host ([net.dns]::GetHostName()) -n -f DarkMagenta
+    #Write-Host "[" -NoNewline
+    #Write-Host $pwd -NoNewline -ForegroundColor DarkGreen
+    #Write-Host "]" -NoNewline
 
-		
-	# Git Prompt
-	$Global:GitStatus = Get-GitStatus
-	#$Global:GitPromptSettings.IndexForegroundColor = [ConsoleColor]::Magenta
+        
+    # Git Prompt
+    $Global:GitStatus = Get-GitStatus
+    #$Global:GitPromptSettings.IndexForegroundColor = [ConsoleColor]::Magenta
     
     # $Global:GitPromptSettings.DelimText = ""
     # $Global:GitPromptSettings.BeforeBackgroundColor = [ConsoleColor]::DarkGray
@@ -68,7 +81,7 @@ function prompt {
     # $Global:GitPromptSettings.UntrackedBackgroundColor = [ConsoleColor]::DarkGray
     
     
-	Write-GitStatus $GitStatus
+    Write-GitStatus $GitStatus
 #		
 #	# Mercurial Prompt
 #	$Global:HgStatus = Get-HgStatus
@@ -77,22 +90,30 @@ function prompt {
 #	# Svn Prompt
 #	$Global:SvnStatus = Get-SvnStatus
 #	Write-SvnStatus $SvnStatus
-	
+    
     Write-Host ""
-    $promptChar = if($IsAdmin) { "#" } else { "$" }
-    Write-Host " $promptChar " -n -foregroundcolor White -backgroundcolor DarkGray
-    Write-Host "" -n -foregroundcolor DarkGray
-	#return "`n> "
+    #$promptChar = if($IsAdmin) { "#" } else { "$" }
+    $promptChar = "$"
+    $promptCharBg = "DarkBlue"
+    $promptCharFg = "White"
+    if($IsAdmin) {
+        $promptChar = "#"
+        $promptCharBg = "DarkRed"
+        $promptCharFg = "White"
+    }
+    Write-Host " $promptChar " -n -foregroundcolor $promptCharFg -backgroundcolor $promptCharBg
+    Write-Host "" -n -foregroundcolor $promptCharBg
+    #return "`n> "
     return " "
 #$ '
 }
 
 function DevTabExpansion($lastBlock){
-	switch -regex ($lastBlock) {
-		'dev (\S*)$' {
-			ls $dev | ?{ $_.Name -match "^$($matches[1])" }
-		}
-	}
+    switch -regex ($lastBlock) {
+        'dev (\S*)$' {
+            ls $dev | ?{ $_.Name -match "^$($matches[1])" }
+        }
+    }
 }
 
 #if(-not (Test-Path Function:\DefaultTabExpansion)) { # broken
